@@ -3,10 +3,10 @@ clear
 clc
 
 % Donde estan las muestras:
-recFile = 'Recordings_to_help_aip_patt_1';
-recordingNamesFile = fopen(['/home/augusto/Escritorio/Beca/Algoritmos/', recFile, '.txt'],'r');
-sourceDirectory = '/home/augusto/Escritorio/Beca/DataBases/';
-resSourceDirectory = '/home/augusto/Escritorio/Beca/Resultados/';
+recFile = 'corpusN200';
+recordingNamesFile = fopen(['/home/ajs93/Escritorio/algoritmos/', recFile, '.txt'],'r');
+sourceDirectory = '/home/ajs93/Escritorio/dbs/';
+resSourceDirectory = '/home/ajs93/Escritorio/Resultados/';
 
 if sourceDirectory(end) ~= filesep
     sourceDirectory(end + 1) = filesep;
@@ -158,11 +158,14 @@ if flag_procesamiento == 0
                     % Obtengo resultados:
                     % TPR = TP/(TP+FN)
                     % PPV = TP/(TP+FP)
-                    TPR = res.series_performance.conf_mat(1,1,count) / ...
-                        (res.series_performance.conf_mat(1,1,count) + res.series_performance.conf_mat(1,2,count));
+                    TP = res.series_performance.conf_mat(1,1,count);
+                    FP = res.series_performance.conf_mat(1,2,count);
+                    FN = res.series_performance.conf_mat(2,1,count);
+                    TN = res.series_performance.conf_mat(2,2,count);
+                    
+                    TPR = TP / (TP + FN);
 
-                    PPV = res.series_performance.conf_mat(1,1,count) / ...
-                        (res.series_performance.conf_mat(1,1,count) + res.series_performance.conf_mat(2,1,count));
+                    PPV = TP / (TP + FP);
 
                     resultados(sub_count).TPR(index,file_count) = TPR;
                     resultados(sub_count).PPV(index,file_count) = PPV;
