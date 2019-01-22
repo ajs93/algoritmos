@@ -26,7 +26,7 @@ function export_tables(results, final_res_directory)
             tablas(:,sub_count) = results(final_count).PPV(lead_number,:);
             sub_count = sub_count + 1;
             
-            tablas(:,sub_count) = results(final_count).FC1(lead_number,:);
+            tablas(:,sub_count) = results(final_count).F1(lead_number,:);
             sub_count = sub_count + 1;
         end
 
@@ -50,7 +50,7 @@ function export_tables(results, final_res_directory)
         for sub_count = 1:numel(results(final_count).lead_names)
             col_names = [col_names,strcat('TPR_Lead_',results(final_count).lead_names(sub_count)), ...
                             strcat('PPV_Lead_',results(final_count).lead_names(sub_count)), ...
-                            strcat('FC1_Lead_',results(final_count).lead_names(sub_count))];
+                            strcat('F1_Lead_',results(final_count).lead_names(sub_count))];
         end
 
         GTHTMLtable(fname,[tablas*100 ; promedios*100],'%1.3f%%', ...
@@ -118,7 +118,7 @@ function export_tables(results, final_res_directory)
 
                 tablas_optimas(record,1) = tablas(record,(max_PRO_index * 3) - 2); % TPR
                 tablas_optimas(record,2) = tablas(record,(max_PRO_index * 3) - 1); % PPV
-                tablas_optimas(record,3) = tablas(record,max_PRO_index * 3); % FC1
+                tablas_optimas(record,3) = tablas(record,max_PRO_index * 3); % F1
             end
         end
 
@@ -141,7 +141,7 @@ function export_tables(results, final_res_directory)
         % En este punto ya tendria las tablas con los mejores valores obtenidos
         fname = strcat('Algoritmo_',results(final_count).pattern_name);
 
-        col_names = {'TPR','PPV', 'FC1'};
+        col_names = {'TPR','PPV', 'F1'};
 
         GTHTMLtable(fname,tablas_optimas(:,:)*100,'%1.3f%%', ...
             col_names,strcat('Recording_',results(final_count).file_names),'colormap',mapa_colores,'save');
@@ -172,7 +172,7 @@ function export_tables(results, final_res_directory)
 
             tablas_C1(record,1) = results(final_count).TPR(max_beats_index,record);
             tablas_C1(record,2) = results(final_count).PPV(max_beats_index,record);
-            tablas_C1(record,3) = results(final_count).FC1(max_beats_index,record);
+            tablas_C1(record,3) = results(final_count).F1(max_beats_index,record);
         end
 
         tablas_C1(record + 1,1) = median(tablas_C1(1:end-4,1));
@@ -194,7 +194,7 @@ function export_tables(results, final_res_directory)
         % En este punto ya tendria las tablas con los mejores valores obtenidos
         fname = strcat('Algoritmo_',results(final_count).pattern_name);
 
-        col_names = {'TPR','PPV', 'FC1'};
+        col_names = {'TPR','PPV', 'F1'};
 
         GTHTMLtable(fname,tablas_C1(:,:)*100,'%1.3f%%', ...
             col_names,strcat('Recording_',results(final_count).file_names),'colormap',mapa_colores,'save');
@@ -223,7 +223,7 @@ function export_tables(results, final_res_directory)
 
             tablas_C2(record,1) = results(final_count).TPR(min_beats_index,record);
             tablas_C2(record,2) = results(final_count).PPV(min_beats_index,record);
-            tablas_C2(record,3) = results(final_count).FC1(min_beats_index,record);
+            tablas_C2(record,3) = results(final_count).F1(min_beats_index,record);
         end
 
         tablas_C2(record + 1,1) = median(tablas_C2(1:end-4,1));
@@ -245,7 +245,7 @@ function export_tables(results, final_res_directory)
         % En este punto ya tendria las tablas con los mejores valores obtenidos
         fname = strcat('Algoritmo_',results(final_count).pattern_name);
 
-        col_names = {'TPR','PPV','FC1'};
+        col_names = {'TPR','PPV','F1'};
 
         GTHTMLtable(fname,tablas_C2(:,:)*100,'%1.3f%%', ...
             col_names,strcat('Recording_',results(final_count).file_names),'colormap',mapa_colores,'save');
@@ -269,7 +269,7 @@ function export_tables(results, final_res_directory)
             if ~isempty(true_idx)
                 tablas_C3(record,1) = results(final_count).TPR(true_idx,record);
                 tablas_C3(record,2) = results(final_count).PPV(true_idx,record);
-                tablas_C3(record,3) = results(final_count).FC1(true_idx,record);
+                tablas_C3(record,3) = results(final_count).F1(true_idx,record);
             else
                 flag = 1;
                 sub_count = 1;
@@ -282,7 +282,7 @@ function export_tables(results, final_res_directory)
                 end
                 tablas_C3(record,1) = results(final_count).TPR(sub_count,record);
                 tablas_C3(record,2) = results(final_count).PPV(sub_count,record);
-                tablas_C3(record,3) = results(final_count).FC1(sub_count,record);
+                tablas_C3(record,3) = results(final_count).F1(sub_count,record);
             end
         end
 
@@ -305,7 +305,7 @@ function export_tables(results, final_res_directory)
         % En este punto ya tendria las tablas con los mejores valores obtenidos
         fname = strcat('Algoritmo_',results(final_count).pattern_name);
 
-        col_names = {'TPR','PPV','FC1'};
+        col_names = {'TPR','PPV','F1'};
 
         GTHTMLtable(fname,tablas_C3(:,:)*100,'%1.3f%%', ...
             col_names,strcat('Recording_',results(final_count).file_names),'colormap',mapa_colores,'save');
