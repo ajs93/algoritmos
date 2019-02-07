@@ -14,14 +14,17 @@ function [] = plotAux(ECGw, chan, t_ini, delta_t, ann, FPAnn)
     
     if ~isempty(FPAnn)
         f = figure(1);
-        plot(t, sign);
+        plot(t ./ ECGw.ECG_header.freq, sign);
         grid on;
         hold on;
-        plot(okAnn, sign(okAnn - t_ini + 1), 'ms');
+        plot(okAnn ./ ECGw.ECG_header.freq, sign(okAnn - t_ini + 1), 'ms');
         hold on;
-        plot(algAnn, sign(algAnn - t_ini + 1), 'bx');
-        hold on;
-        plot(FPAnn, sign(FPAnn - t_ini + 1), 'r*');
+        plot(algAnn ./ ECGw.ECG_header.freq, sign(algAnn - t_ini + 1), 'rx');
+        %hold on;
+        %plot(FPAnn, sign(FPAnn - t_ini + 1), 'r*');
+        
+        %legend('ECG','Real annotations','Algorithm annotations','False Positives')
+        legend('ECG','Real annotations','Algorithm annotations')
         
         set(gcf,'units','normalized','outerposition',[0 0 1 1])
 

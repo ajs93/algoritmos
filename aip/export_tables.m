@@ -86,14 +86,14 @@ function export_tables(results, final_res_directory)
             max_PRO_index = 0;
 
             for sub_count = 1:numel(results(final_count).lead_names)
-                if (tablas(record,(sub_count * 2) - 1) > max_TPR_value)
-                    max_TPR_value = tablas(record,(sub_count * 2) - 1);
-                    max_TPR_index = (sub_count * 2) - 1;
+                if (tablas(record,(sub_count * 3) - 2) > max_TPR_value)
+                    max_TPR_value = tablas(record,(sub_count * 3) - 2);
+                    max_TPR_index = (sub_count * 3) - 2;
                 end
 
-                if (tablas(record,sub_count * 2) > max_PPV_value)
-                    max_PPV_value = tablas(record,sub_count * 2);
-                    max_PPV_index = (sub_count * 2) - 1;
+                if (tablas(record,(sub_count * 3) - 1) > max_PPV_value)
+                    max_PPV_value = tablas(record,(sub_count * 3) - 1);
+                    max_PPV_index = (sub_count * 3) - 1;
                 end
             end
 

@@ -6,10 +6,10 @@ clc
 delete_cached = false;
 
 % Check cached?
-bCached = true;
+bCached = false;
 
 % Donde estan las muestras:
-recFile = 'corpusmini';
+recFile = 'corpusN200';
 recordingNamesFile = fopen(['/home/augusto/Escritorio/Beca/Algoritmos/algoritmos/', recFile, '.txt'],'r');
 sourceDirectory = '/home/augusto/Escritorio/Beca/DataBases/';
 resSourceDirectory = '/home/augusto/Escritorio/Beca/Resultados/';
