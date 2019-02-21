@@ -47,8 +47,8 @@ max_patterns = 2; % Incluyendo el aip_guess
 flag_procesamiento = 1;
 resultados(max_patterns) = struct('file_names',[],'lead_names',[],'TPR',[],'PPV',[],'F1',[],'beats',[],'TP',[], ...
                                     'FP',[],'FN',[],'TN',[],'pattern_name',[]);
-algoritmos = 'aip';
-aux_alg = 'aip';
+algoritmos = 'aip_posta';
+aux_alg = 'aip_posta';
 
 % Nombres de los patrones a buscar
 aip_patterns = {'aip_guess'};
@@ -111,7 +111,7 @@ if flag_procesamiento == 0
         ECGw.user_string = 'AIP_det';
 
         % add your function pointer
-        ECGw.ECGtaskHandle.function_pointer = @aip_detector;
+        ECGw.ECGtaskHandle.function_pointer = @aip_detector_posta;
         ECGw.ECGtaskHandle.concate_func_pointer = @aip_detector_concatenate;
 
         ECGw.cacheResults = bCached; 

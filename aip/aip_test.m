@@ -27,7 +27,7 @@ payload_in = [];
 % filename = '/home/augusto/Escritorio/Beca/DataBases/ltafdb/24';
 % filename = '/home/augusto/Escritorio/Beca/DataBases/edb/e0606';
 % filename = '/home/augusto/Escritorio/Beca/DataBases/thew/461_PR01_040505_2';
-filename = '/home/augusto/Escritorio/Beca/DataBases/fantasia/f1o05';
+filename = '/home/augusto/Escritorio/Beca/DataBases/thew/461_PR01_040505_2';
 % filename = '/home/augusto/Escritorio/Beca/DataBases/ratadb/06012006_182543';
 % filename = '/home/augusto/Escritorio/Beca/DataBases/mitdb/222';
 
@@ -43,7 +43,7 @@ filename = '/home/augusto/Escritorio/Beca/DataBases/fantasia/f1o05';
 % payload_in.sig_idx = 1; % first signal is the rat pECG
 
 
-payload.max_patterns_found = 1; % # de morfologías o latidos a buscar
+payload.max_patterns_found = 3; % # de morfologías o latidos a buscar
 
 
 bCached = false;

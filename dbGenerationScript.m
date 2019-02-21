@@ -39,6 +39,9 @@ formats = {'MIT', ...
            'MIT', ...
            'MAT'};
 
+patient_list_INCART = { 'I01' , 'I02';
+                        'I03
+
 N = round(N/numel(databases));
 aux = '';
 sprintf(aux,'Archivos por database = %d',N);
