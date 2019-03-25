@@ -1,4 +1,4 @@
-%% Prueba para el toolkit ECGkit
+%% Testbench armado para las bases de datos NO ECG
 clear
 clc
 
@@ -9,59 +9,46 @@ delete_cached = false;
 bCached = false;
 
 % Donde estan las muestras:
-recFile = 'corpus_final';
-recordingNamesFile = fopen(['/home/augusto/Escritorio/GIBIO/Algoritmos/algoritmos/', recFile, '.txt'],'r');
-sourceDirectory = '/home/augusto/Escritorio/GIBIO/DataBases/';
-resSourceDirectory = '/home/augusto/Escritorio/GIBIO/Resultados/';
+source_directory = '/home/augusto/Escritorio/GIBIO/DataBases/ratadb_segmentada/';
+res_source_directory = '/home/augusto/Escritorio/GIBIO/Resultados/ratadb_segmentada_results_aip/';
 
-if sourceDirectory(end) ~= filesep
-    sourceDirectory(end + 1) = filesep;
-end
+% Archivo de texto con los recordings a segmentar
+recording_file_handler = fopen('/home/augusto/Escritorio/GIBIO/Algoritmos/algoritmos/recordings_rata.txt','r');
 
-if resSourceDirectory(end) ~= filesep
-    resSourceDirectory(end + 1) = filesep;
-end
-
-if recordingNamesFile == -1
-    disp('Error abriendo archivo identificador de las db');
+if recording_file_handler == -1
+    disp('Error abriendo archivo de recordings a segmentar.');
     return;
 end
 
-eofFound = 1;
+if source_directory(end) ~= filesep
+    source_directory(end + 1) = filesep;
+end
+
+if res_source_directory(end) ~= filesep
+    res_source_directory(end + 1) = filesep;
+end
+
+if ~exist(res_source_directory, 'dir')
+    mkdir(res_source_directory);
+end
+
+eof_found = 1;
 counter = 1;
 archivos = struct('name',[]);
 
-while eofFound == 1
-    auxString = fgetl(recordingNamesFile);
-    if auxString == -1
-        eofFound = 0;
+while eof_found == 1
+    aux_string = fgetl(recording_file_handler);
+    if aux_string == -1
+        eof_found = 0;
     else
-        archivos(counter).name = auxString;
+        archivos(counter).name = aux_string;
         counter = counter + 1;
     end
 end
 
-fclose(recordingNamesFile);
+fclose(recording_file_handler);
 
-archivos_faltantes = {};
-
-for count = 1:numel(archivos)
-    if ~(exist([sourceDirectory,archivos(count).name,'.hea'], 'file') || exist([sourceDirectory,archivos(count).name,'.mat'], 'file'))
-        archivos_faltantes{numel(archivos_faltantes) + 1} = [sourceDirectory,archivos(count).name];
-    end
-end
-
-if numel(archivos_faltantes) > 0
-    disp('Faltan los siguientes archivos para procesar:');
-    
-    for count = 1:numel(archivos_faltantes)
-        disp(archivos_faltantes{count});
-    end
-    
-    return;
-end
-
-max_patterns = 2; % Incluyendo el aip_guess
+max_patterns = 1; % Incluyendo el aip_guess
 flag_procesamiento = 1;
 resultados(max_patterns) = struct('file_names',[],'lead_names',[],'TPR',[],'PPV',[],'F1',[],'beats',[],'TP',[], ...
                                     'FP',[],'FN',[],'TN',[],'pattern_name',[]);
@@ -78,13 +65,11 @@ for count = 1:numel(aip_patterns)
     resultados(count).pattern_name = aip_patterns{count};
 end
 
-final_res_directory = [resSourceDirectory,recFile,'_',algoritmos,filesep];
-
-if exist([final_res_directory,'Results.mat'], 'file') ~= 0
+if exist([res_source_directory,'Results.mat'], 'file') ~= 0
     % Esto quiere decir que ya habian resultados calculados, tomo
     % directamente el primer archivo que encuentre (deberia haber solo uno
     % por como tengo escrito el script)
-    load([final_res_directory,'Results.mat'],'resultados');
+    load([res_source_directory,'Results.mat'],'resultados');
 else
     % No habia ningun archivo de resultados anteriores
     flag_procesamiento = 0;
@@ -107,21 +92,20 @@ if flag_procesamiento == 0
 
     for file_count = 1:numel(archivos)
         ECGw = ECGwrapper();
-        
+
         for count = 1:numel(resultados)
-            resultados(count).file_names{numel(resultados(count).file_names) + 1} = archivos(file_count).name(1:end);
+            resultados(count).file_names{numel(resultados(count).file_names) + 1} = archivos(file_count).name;
         end
-        
-        ECGw.recording_name = [sourceDirectory,archivos(file_count).name];
+
+        ECGw.recording_name = [source_directory,archivos(file_count).name];
 
         % Asigno el algoritmo de deteccion de QRS a utilizar:
         ECGw.ECGtaskHandle = 'arbitrary_function';
 
         payload = [];
 
-        payload.ECG_annotations = ECGw.ECG_annotations;
-        payload.trgt_width = 60e-3;
-        payload.trgt_min_pattern_separation = 300e-3;
+        payload.trgt_width = 30e-3;
+        payload.trgt_min_pattern_separation = 120e-3;
         payload.trgt_max_pattern_separation = 2;
         payload.max_patterns_found = max_patterns;
         ECGw.ECGtaskHandle.payload = payload;
@@ -129,7 +113,7 @@ if flag_procesamiento == 0
         ECGw.user_string = 'AIP_det';
 
         % add your function pointer
-        ECGw.ECGtaskHandle.function_pointer = @aip_detector_posta;
+        ECGw.ECGtaskHandle.function_pointer = @aip_detector;
         ECGw.ECGtaskHandle.concate_func_pointer = @aip_detector_concatenate;
 
         ECGw.cacheResults = bCached; 
@@ -140,12 +124,22 @@ if flag_procesamiento == 0
         file = ECGw.GetCahchedFileName('arbitrary_function');
 
         resInt = load(cell2mat(file));
-        
+
         if delete_cached == true
             delete(file{1}); % Borro archivo cacheado
         end
         
         res = CalculatePerformanceECGtaskQRSdet(resInt, ECGw.ECG_annotations, ECGw.ECG_header, 1);
+
+%         ECGw.ECGtaskHandle = 'QRS_corrector';
+        
+%         resInt.anotaciones_posta = ECGw.ECG_annotations;
+%         resInt.series_quality.AnnNames(end + 1,:) = {'anotaciones_posta','time'};
+%         resInt.series_quality.ratios(end + 1) = 0;
+%         
+%         ECGw.ECGtaskHandle.payload = resInt;
+%         
+%         ECGw.Run();
         
         % Indices que correspondan a cada patron y distintos resultados
         % para cada uno
@@ -181,7 +175,7 @@ if flag_procesamiento == 0
                     resultados(sub_count).FP(index,file_count) = res.series_performance.conf_mat(1,2,count);
                     resultados(sub_count).FN(index,file_count) = res.series_performance.conf_mat(2,1,count);
                     resultados(sub_count).TN(index,file_count) = res.series_performance.conf_mat(2,2,count);
-                    
+
                     % Obtengo resultados:
                     % TPR = TP/(TP+FN)
                     % PPV = TP/(TP+FP)
@@ -189,11 +183,11 @@ if flag_procesamiento == 0
                     FP = res.series_performance.conf_mat(1,2,count);
                     FN = res.series_performance.conf_mat(2,1,count);
                     TN = res.series_performance.conf_mat(2,2,count);
-                    
+
                     TPR = TP / (TP + FN);
 
                     PPV = TP / (TP + FP);
-                    
+
                     F1 = (2*TP)/(2*TP+FP+FN);
 
                     resultados(sub_count).TPR(index,file_count) = TPR;
@@ -211,9 +205,9 @@ else
 end
 
 % Guardo los resultados para no tener que repetir todo el proceso:
-save([final_res_directory,'Results.mat'],'resultados');
+save([res_source_directory,'Results.mat'],'resultados');
 
 disp('Resultado guardado en:');
-disp([final_res_directory,'Results.mat']);
+disp([res_source_directory,'Results.mat']);
 
-export_tables(resultados, final_res_directory);
+export_tables(resultados, res_source_directory);

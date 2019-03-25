@@ -3,8 +3,8 @@ clear
 clc
 
 % Donde estan las muestras:
-sourceDirectory = '/home/augusto/Escritorio/Beca/DataBases/';
-resSourceDirectory = '/home/augusto/Escritorio/Beca/Resultados/';
+sourceDirectory = '/home/augusto/Escritorio/GIBIO/DataBases/';
+resSourceDirectory = '/home/augusto/Escritorio/GIBIO/Resultados/';
 dbName = 'ratadb';
 
 if sourceDirectory(end) ~= filesep

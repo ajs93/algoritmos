@@ -6,14 +6,14 @@ clear;
 clc;
 
 % Archivo a analizar
-results_file = '/home/augusto/Escritorio/Beca/Resultados/corpusN200_aip/Results.mat';
+results_file = '/home/augusto/Escritorio/GIBIO/Resultados/corpus_final_aip/Results.mat';
 
 % Umbral de separacion, basado en el parametro TE = (FP + FN) / (TP + FN)
 % (Tasa de error, ponele...)
 TE_threshold = 0.1;
 
 % Directorio de salida
-output_directory = '/home/augusto/Escritorio/Beca';
+output_directory = '/home/augusto/Escritorio/GIBIO';
 
 if output_directory(end) ~= filesep
     output_directory(end + 1) = filesep;
@@ -22,7 +22,7 @@ end
 %% Procesamiento
 
 % Leo el archivo seleccionado
-load('/home/augusto/Escritorio/Beca/Resultados/corpusN200_aip/Results.mat');
+load(results_file);
 
 % Seleccion de detecciones para quedarse
 tabla_MLII_or_first(numel(resultados), numel(resultados(1).file_names)) = struct('file_names',[],'TP',[],'FP',[],'FN',[],'TN',[]);

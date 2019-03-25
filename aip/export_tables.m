@@ -160,8 +160,8 @@ function export_tables(results, final_res_directory)
         tablas_C1(end,:) = -1;
 
         for record = 1:numel(results(final_count).file_names) - 4
-            max_beats_value = 0;
-            max_beats_index = 0;
+            max_beats_value = -1;
+            max_beats_index = 1;
 
             for sub_count = 1:numel(results(final_count).lead_names)
                 if max_beats_value < results(final_count).beats(sub_count,record)
@@ -211,8 +211,8 @@ function export_tables(results, final_res_directory)
         tablas_C2(end,:) = -1;
 
         for record = 1:numel(results(final_count).file_names) - 4
-            min_beats_value = inf;
-            min_beats_index = 0;
+            min_beats_value = 100e6;
+            min_beats_index = 1;
 
             for sub_count = 1:numel(results(final_count).lead_names)
                 if min_beats_value > results(final_count).beats(sub_count,record) && results(final_count).beats(sub_count,record) ~= 0
