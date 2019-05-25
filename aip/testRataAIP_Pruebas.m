@@ -17,9 +17,9 @@ end
 
 archivos = dir([sourceDirectory,dbName,filesep,'*.dat']);
 
-max_patterns = 2; % Incluyendo el aip_guess
+max_patterns = 1; % Incluyendo el aip_guess
 flag_procesamiento = 1;
-resultados(max_patterns) = struct('file_names',[],'lead_names',[],'TPR',[],'PPV',[],'beats',[],'TP',[],'FP',[],'FN',[],'TN',[]);
+resultados(max_patterns) = struct('file_names',[],'lead_names',[],'TPR',[],'PPV',[], 'F1',[],'beats',[],'TP',[],'FP',[],'FN',[],'TN',[]);
 algoritmos = 'aip';
 aux_alg = 'aip';
 
@@ -127,22 +127,30 @@ if flag_procesamiento == 0
                     % En index tengo el lugar donde poner el TPR y el PPV
                     % del recording y del canal
                     % Guardo los cuatro parametros para tener mas info
-                    resultados(sub_count).TP(index,file_count) = res.series_performance.conf_mat(1,1,count);
-                    resultados(sub_count).FP(index,file_count) = res.series_performance.conf_mat(1,2,count);
-                    resultados(sub_count).FN(index,file_count) = res.series_performance.conf_mat(2,1,count);
-                    resultados(sub_count).TN(index,file_count) = res.series_performance.conf_mat(2,2,count);
+                    TP = res.series_performance.conf_mat(1,1,count);
+                    FP = res.series_performance.conf_mat(1,1,count);
+                    FN = res.series_performance.conf_mat(1,2,count);
+                    TN = res.series_performance.conf_mat(2,2,count);
+                    
+                    resultados(sub_count).TP(index,file_count) = TP;
+                    resultados(sub_count).FP(index,file_count) = FP;
+                    resultados(sub_count).FN(index,file_count) = FN;
+                    resultados(sub_count).TN(index,file_count) = TN;
                     
                     % Obtengo resultados:
                     % TPR = TP/(TP+FN)
                     % PPV = TP/(TP+FP)
-                    TPR = res.series_performance.conf_mat(1,1,count) / ...
-                        (res.series_performance.conf_mat(1,1,count) + res.series_performance.conf_mat(1,2,count));
+                    % F1 = (2*TP)/(2*TP+FP+FN);
+                    
+                    TPR = TP / (TP + FN);
 
-                    PPV = res.series_performance.conf_mat(1,1,count) / ...
-                        (res.series_performance.conf_mat(1,1,count) + res.series_performance.conf_mat(2,1,count));
+                    PPV = TP / (TP + FP);
+                    
+                    F1 = (2*TP)/(2*TP+FP+FN);
 
                     resultados(sub_count).TPR(index,file_count) = TPR;
                     resultados(sub_count).PPV(index,file_count) = PPV;
+                    resultados(sub_count).F1(index,file_count) = F1;
                     resultados(sub_count).beats(index,file_count) = sum(res.series_performance.conf_mat(:,1,count));
                 end
             end

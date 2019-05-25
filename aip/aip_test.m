@@ -4,6 +4,35 @@ clc
 
 %% Config data
 
+%%%%%%%%%
+% Ruido %
+%%%%%%%%%
+% 
+% Noise recording generator
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% % heasig.freq = 250;
+% % heasig.nsamp = 10000;
+% % heasig.nsig = 3;
+% % heasig.gain = 2^12 * ones(heasig.nsig,1);
+% % heasig.adczero = zeros(heasig.nsig,1);
+% % heasig.recname = '1';
+% % db_path_local = '/home/mllamedo/mariano/dbs/my_noise/';
+% % 
+% % MIT_filename = [ db_path_local heasig.recname '.dat' ];
+% % fidECG = fopen(MIT_filename, 'w');
+% % try
+% %     ECG = bsxfun(@times, randn([heasig.nsig heasig.nsamp]), heasig.gain);
+% %     fwrite(fidECG, ECG, 'int16', 0 );
+% %     fclose(fidECG);
+% % catch MEE
+% %     fclose(fidECG);
+% %     rethrow(MEE);
+% % end
+% % writeheader(db_path_local, heasig);   
+% 
+% 
+% filename = '/home/mllamedo/mariano/dbs/my_noise/1';
+
 %%%%%%%%%%%%%%
 % ECG Humano %
 %%%%%%%%%%%%%%
@@ -22,11 +51,11 @@ clc
 % filename = '/home/mllamedo/mariano/dbs/E-OTH-12-0927-015/896_PR01_040913_1';
 % Long-term
 % filename = '/home/mllamedo/mariano/dbs/ltdb/14046';
-% filename = '/home/augusto/Escritorio/GIBIO/DataBases/ltafdb/24';
-% filename = '/home/augusto/Escritorio/GIBIO/DataBases/edb/e0606';
+filename = '/home/augusto/Escritorio/GIBIO/DataBases/ltafdb/114';
+% filename = '/home/augusto/Escritorio/GIBIO/DataBases/mitdb/101';
 % filename = '/home/augusto/Escritorio/GIBIO/DataBases/thew/243_PR01_040204_9';
 % filename = '/home/augusto/Escritorio/GIBIO/DataBases/ratadb/08012006_180942';
-filename = '/home/augusto/Escritorio/GIBIO/DataBases/nsrdb/16272';
+% filename = '/home/augusto/Escritorio/GIBIO/DataBases/nsrdb/16272';
 
 %%%%%%%%%%%%
 % ECG Rata %
@@ -44,6 +73,8 @@ payload.max_patterns_found = 1; % # de morfologías o latidos a buscar
 
 
 bCached = false;
+
+tic;
 
 %% Arbitrary impulsive pseudoperiodic (AIP) detector 
 
@@ -77,6 +108,8 @@ ECGw.ECGtaskHandle.concate_func_pointer = @aip_detector_concatenate;
 ECGw.cacheResults = bCached;
 
 ECGw.Run();
+
+toc;
 
 % Tomo el resultado de correr el detector:
 file = ECGw.GetCahchedFileName('arbitrary_function');

@@ -10,7 +10,7 @@ bCached = false;
 
 % Donde estan las muestras:
 source_directory = '/home/augusto/Escritorio/GIBIO/DataBases/ratadb_segmentada/';
-res_source_directory = '/home/augusto/Escritorio/GIBIO/Resultados/ratadb_segmentada_results_aip/';
+res_source_directory = '/home/augusto/Escritorio/GIBIO/Resultados_articulo_AIP/ratadb_segmentada_results_aip_mal_parametrosa/';
 
 % Archivo de texto con los recordings a segmentar
 recording_file_handler = fopen('/home/augusto/Escritorio/GIBIO/Algoritmos/algoritmos/recordings_rata.txt','r');
@@ -104,8 +104,8 @@ if flag_procesamiento == 0
 
         payload = [];
 
-        payload.trgt_width = 30e-3;
-        payload.trgt_min_pattern_separation = 120e-3;
+        payload.trgt_width = 60e-3;
+        payload.trgt_min_pattern_separation = 300e-3;
         payload.trgt_max_pattern_separation = 2;
         payload.max_patterns_found = max_patterns;
         ECGw.ECGtaskHandle.payload = payload;
@@ -171,19 +171,19 @@ if flag_procesamiento == 0
                     % En index tengo el lugar donde poner el TPR y el PPV
                     % del recording y del canal
                     % Guardo los cuatro parametros para tener mas info
-                    resultados(sub_count).TP(index,file_count) = res.series_performance.conf_mat(1,1,count);
-                    resultados(sub_count).FP(index,file_count) = res.series_performance.conf_mat(1,2,count);
-                    resultados(sub_count).FN(index,file_count) = res.series_performance.conf_mat(2,1,count);
-                    resultados(sub_count).TN(index,file_count) = res.series_performance.conf_mat(2,2,count);
+                    TP = res.series_performance.conf_mat(1,1,count);
+                    FP = res.series_performance.conf_mat(2,1,count);
+                    FN = res.series_performance.conf_mat(1,2,count);
+                    TN = res.series_performance.conf_mat(2,2,count);
+                    
+                    resultados(sub_count).TP(index,file_count) = TP;
+                    resultados(sub_count).FP(index,file_count) = FP;
+                    resultados(sub_count).FN(index,file_count) = FN;
+                    resultados(sub_count).TN(index,file_count) = TN;
 
                     % Obtengo resultados:
                     % TPR = TP/(TP+FN)
                     % PPV = TP/(TP+FP)
-                    TP = res.series_performance.conf_mat(1,1,count);
-                    FP = res.series_performance.conf_mat(1,2,count);
-                    FN = res.series_performance.conf_mat(2,1,count);
-                    TN = res.series_performance.conf_mat(2,2,count);
-
                     TPR = TP / (TP + FN);
 
                     PPV = TP / (TP + FP);

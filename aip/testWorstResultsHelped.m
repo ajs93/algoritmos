@@ -155,8 +155,8 @@ if flag_procesamiento == 0
                 % PPV = TP/(TP+FP)
                 
                 TP = res.series_performance.conf_mat(1,1,count);
-                FP = res.series_performance.conf_mat(1,2,count);
-                FN = res.series_performance.conf_mat(2,1,count);
+                FP = res.series_performance.conf_mat(2,1,count);
+                FN = res.series_performance.conf_mat(1,2,count);
                 TN = res.series_performance.conf_mat(2,2,count);
                 
                 resultados.TP(file_count) = TP;

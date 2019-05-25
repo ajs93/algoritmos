@@ -10,7 +10,7 @@ bCached = false;
 
 % Donde estan las muestras:
 source_directory = '/home/augusto/Escritorio/GIBIO/DataBases/BIDMC/';
-res_source_directory = '/home/augusto/Escritorio/GIBIO/Resultados/BIDMC_PPG_Results_aip/';
+res_source_directory = '/home/augusto/Escritorio/GIBIO/Resultados_articulo_AIP/BIDMC_PPG_Results_aip_mal_parametros/';
 
 if source_directory(end) ~= filesep
     source_directory(end + 1) = filesep;
@@ -26,7 +26,7 @@ end
 
 archivos_carpeta = dir(source_directory);
 
-max_patterns = 2; % Incluyendo el aip_guess
+max_patterns = 1; % Incluyendo el aip_guess
 flag_procesamiento = 1;
 resultados(max_patterns) = struct('file_names',[],'lead_names',[],'TPR',[],'PPV',[],'F1',[],'beats',[],'TP',[], ...
                                     'FP',[],'FN',[],'TN',[],'pattern_name',[]);
@@ -150,19 +150,19 @@ if flag_procesamiento == 0
                     % En index tengo el lugar donde poner el TPR y el PPV
                     % del recording y del canal
                     % Guardo los cuatro parametros para tener mas info
-                    resultados(sub_count).TP(index,file_count) = res.series_performance.conf_mat(1,1,count);
-                    resultados(sub_count).FP(index,file_count) = res.series_performance.conf_mat(1,2,count);
-                    resultados(sub_count).FN(index,file_count) = res.series_performance.conf_mat(2,1,count);
-                    resultados(sub_count).TN(index,file_count) = res.series_performance.conf_mat(2,2,count);
+                    TP = res.series_performance.conf_mat(1,1,count);
+                    FP = res.series_performance.conf_mat(2,1,count);
+                    FN = res.series_performance.conf_mat(1,2,count);
+                    TN = res.series_performance.conf_mat(2,2,count);
+                    
+                    resultados(sub_count).TP(index,file_count) = TP;
+                    resultados(sub_count).FP(index,file_count) = FP;
+                    resultados(sub_count).FN(index,file_count) = FN;
+                    resultados(sub_count).TN(index,file_count) = FN;
 
                     % Obtengo resultados:
                     % TPR = TP/(TP+FN)
                     % PPV = TP/(TP+FP)
-                    TP = res.series_performance.conf_mat(1,1,count);
-                    FP = res.series_performance.conf_mat(1,2,count);
-                    FN = res.series_performance.conf_mat(2,1,count);
-                    TN = res.series_performance.conf_mat(2,2,count);
-
                     TPR = TP / (TP + FN);
 
                     PPV = TP / (TP + FP);

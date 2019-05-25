@@ -12,14 +12,21 @@ bCached = false;
 recFile = 'corpus_final';
 recordingNamesFile = fopen(['/home/augusto/Escritorio/GIBIO/Algoritmos/algoritmos/', recFile, '.txt'],'r');
 sourceDirectory = '/home/augusto/Escritorio/GIBIO/DataBases/';
-resSourceDirectory = '/home/augusto/Escritorio/GIBIO/Resultados/';
+final_res_directory = '/home/augusto/Escritorio/GIBIO/Resultados_articulo_AIP/corpus_final_aip';
+
+trgt_min_pattern_separation = 300e-3;
+trgt_width = 240e-3;
 
 if sourceDirectory(end) ~= filesep
     sourceDirectory(end + 1) = filesep;
 end
 
-if resSourceDirectory(end) ~= filesep
-    resSourceDirectory(end + 1) = filesep;
+if final_res_directory(end) ~= filesep
+    final_res_directory(end + 1) = filesep;
+end
+
+if ~exist(final_res_directory, 'dir')
+    mkdir(final_res_directory);
 end
 
 if recordingNamesFile == -1
@@ -61,7 +68,7 @@ if numel(archivos_faltantes) > 0
     return;
 end
 
-max_patterns = 2; % Incluyendo el aip_guess
+max_patterns = 1; % Incluyendo el aip_guess
 flag_procesamiento = 1;
 resultados(max_patterns) = struct('file_names',[],'lead_names',[],'TPR',[],'PPV',[],'F1',[],'beats',[],'TP',[], ...
                                     'FP',[],'FN',[],'TN',[],'pattern_name',[]);
@@ -77,8 +84,6 @@ end
 for count = 1:numel(aip_patterns)
     resultados(count).pattern_name = aip_patterns{count};
 end
-
-final_res_directory = [resSourceDirectory,recFile,'_',algoritmos,filesep];
 
 if exist([final_res_directory,'Results.mat'], 'file') ~= 0
     % Esto quiere decir que ya habian resultados calculados, tomo
@@ -118,10 +123,10 @@ if flag_procesamiento == 0
         ECGw.ECGtaskHandle = 'arbitrary_function';
 
         payload = [];
-
+        
         payload.ECG_annotations = ECGw.ECG_annotations;
-        payload.trgt_width = 60e-3;
-        payload.trgt_min_pattern_separation = 300e-3;
+        payload.trgt_width = trgt_width;
+        payload.trgt_min_pattern_separation = trgt_min_pattern_separation;
         payload.trgt_max_pattern_separation = 2;
         payload.max_patterns_found = max_patterns;
         ECGw.ECGtaskHandle.payload = payload;
@@ -129,7 +134,7 @@ if flag_procesamiento == 0
         ECGw.user_string = 'AIP_det';
 
         % add your function pointer
-        ECGw.ECGtaskHandle.function_pointer = @aip_detector_posta;
+        ECGw.ECGtaskHandle.function_pointer = @aip_detector;
         ECGw.ECGtaskHandle.concate_func_pointer = @aip_detector_concatenate;
 
         ECGw.cacheResults = bCached; 
@@ -177,19 +182,19 @@ if flag_procesamiento == 0
                     % En index tengo el lugar donde poner el TPR y el PPV
                     % del recording y del canal
                     % Guardo los cuatro parametros para tener mas info
-                    resultados(sub_count).TP(index,file_count) = res.series_performance.conf_mat(1,1,count);
-                    resultados(sub_count).FP(index,file_count) = res.series_performance.conf_mat(1,2,count);
-                    resultados(sub_count).FN(index,file_count) = res.series_performance.conf_mat(2,1,count);
-                    resultados(sub_count).TN(index,file_count) = res.series_performance.conf_mat(2,2,count);
+                    TP = res.series_performance.conf_mat(1,1,count);
+                    FP = res.series_performance.conf_mat(2,1,count);
+                    FN = res.series_performance.conf_mat(1,2,count);
+                    TN = res.series_performance.conf_mat(2,2,count);
+                    
+                    resultados(sub_count).TP(index,file_count) = TP;
+                    resultados(sub_count).FP(index,file_count) = FP;
+                    resultados(sub_count).FN(index,file_count) = FN;
+                    resultados(sub_count).TN(index,file_count) = TN;
                     
                     % Obtengo resultados:
                     % TPR = TP/(TP+FN)
                     % PPV = TP/(TP+FP)
-                    TP = res.series_performance.conf_mat(1,1,count);
-                    FP = res.series_performance.conf_mat(1,2,count);
-                    FN = res.series_performance.conf_mat(2,1,count);
-                    TN = res.series_performance.conf_mat(2,2,count);
-                    
                     TPR = TP / (TP + FN);
 
                     PPV = TP / (TP + FP);

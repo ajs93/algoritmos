@@ -286,21 +286,21 @@ function export_tables(results, final_res_directory)
             end
         end
 
-        tablas_C3(record + 1,1) = median(tablas_C3(1:end-4,1));
-        tablas_C3(record + 1,2) = median(tablas_C3(1:end-4,2));
-        tablas_C3(record + 1,3) = median(tablas_C3(1:end-4,3));
+        tablas_C3(record + 1,1) = median(tablas_C3(1:end-5,1));
+        tablas_C3(record + 1,2) = median(tablas_C3(1:end-5,2));
+        tablas_C3(record + 1,3) = median(tablas_C3(1:end-5,3));
 
-        tablas_C3(record + 2,1) = mad(tablas_C3(1:end-4,1));
-        tablas_C3(record + 2,2) = mad(tablas_C3(1:end-4,2));
-        tablas_C3(record + 2,3) = mad(tablas_C3(1:end-4,3));
+        tablas_C3(record + 2,1) = mad(tablas_C3(1:end-5,1));
+        tablas_C3(record + 2,2) = mad(tablas_C3(1:end-5,2));
+        tablas_C3(record + 2,3) = mad(tablas_C3(1:end-5,3));
 
-        tablas_C3(record + 3,1) = mean(tablas_C3(1:end-4,1));
-        tablas_C3(record + 3,2) = mean(tablas_C3(1:end-4,2));
-        tablas_C3(record + 3,3) = mean(tablas_C3(1:end-4,3));
+        tablas_C3(record + 3,1) = mean(tablas_C3(1:end-5,1));
+        tablas_C3(record + 3,2) = mean(tablas_C3(1:end-5,2));
+        tablas_C3(record + 3,3) = mean(tablas_C3(1:end-5,3));
 
-        tablas_C3(record + 4,1) = std(tablas_C3(1:end-4,1));
-        tablas_C3(record + 4,2) = std(tablas_C3(1:end-4,2));
-        tablas_C3(record + 4,3) = std(tablas_C3(1:end-4,3));
+        tablas_C3(record + 4,1) = std(tablas_C3(1:end-5,1));
+        tablas_C3(record + 4,2) = std(tablas_C3(1:end-5,2));
+        tablas_C3(record + 4,3) = std(tablas_C3(1:end-5,3));
 
         % En este punto ya tendria las tablas con los mejores valores obtenidos
         fname = strcat('Algoritmo_',results(final_count).pattern_name);

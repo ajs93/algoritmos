@@ -16,7 +16,7 @@ ECGw.ECG_annotations = aux_val.manual_1;
 payload.trgt_width = 60e-3;
 payload.trgt_min_pattern_separation = 300e-3;
 payload.trgt_max_pattern_separation = 2;
-payload.max_patterns_found = 2;
+payload.max_patterns_found = 1;
 ECGw.ECGtaskHandle.payload = payload;
 
 ECGw.user_string = 'AIP_det';
